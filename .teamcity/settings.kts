@@ -1,7 +1,5 @@
 import jetbrains.buildServer.configs.kotlin.*
-import jetbrains.buildServer.configs.kotlin.buildFeatures.approval
-import jetbrains.buildServer.configs.kotlin.buildFeatures.perfmon
-import jetbrains.buildServer.configs.kotlin.buildSteps.script
+import jetbrains.buildServer.configs.kotlin.buildSteps.maven
 import jetbrains.buildServer.configs.kotlin.triggers.vcs
 
 /*
@@ -26,11 +24,10 @@ To debug in IntelliJ Idea, open the 'Maven Projects' tool window (View
 'Debug' option is available in the context menu for the task.
 */
 
-version = "2024.03"
+version = "2025.07"
 
 project {
 
-    buildType(Test)
     buildType(Build)
 }
 
@@ -42,8 +39,9 @@ object Build : BuildType({
     }
 
     steps {
-        script {
-            scriptContent = "echo 'build'"
+        maven {
+            goals = "clean test"
+            runnerArgs = "-Dmaven.test.failure.ignore=true"
         }
     }
 
@@ -51,35 +49,6 @@ object Build : BuildType({
         vcs {
         }
     }
-
-    features {
-        perfmon {
-        }
-    }
 })
 
-object Test : BuildType({
-    name = "test"
 
-    vcs {
-        root(DslContext.settingsRoot)
-    }
-
-    steps {
-        script {
-            id = "simpleRunner"
-            scriptContent = "echo 'manual'"
-        }
-    }
-
-    features {
-        approval {
-            approvalRules = "user:marcobehlerjetbrains"
-        }
-    }
-
-    dependencies {
-        snapshot(Build) {
-        }
-    }
-})
