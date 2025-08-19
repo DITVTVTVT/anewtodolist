@@ -60,3 +60,4 @@ class Maven (name: String, goals: String, runnerArgs: String? = null) : BuildTyp
         }
     }
 })
+
