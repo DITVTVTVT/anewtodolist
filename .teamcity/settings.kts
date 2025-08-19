@@ -46,7 +46,7 @@ project {
 }
 
 class Maven (name: String, goals: String, runnerArgs: String? = null) : BuildType ({
-    id("Anewtodolist_${name.replace(" ", "")}")
+    id(name.toId())
     this.name = name
 
     vcs {
